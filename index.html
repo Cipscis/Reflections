@@ -6,9 +6,49 @@
 </head>
 <body>
 	<script type="text/javascript">
-		require(['Reflection']);
+		require(['Reflection/Reflection'], function (Reflection) {
+			window.render = function () {
+				var lsd = +document.getElementById('lightSourceDistance').value,
+					lsh = +document.getElementById('lightSourceHeight').value,
+					rh = +document.getElementById('reflectorHeight').value,
+					ma = +document.getElementById('maxAngle').value,
+					ss = +document.getElementById('stepSize').value;
+
+				Reflection.init(lsd, lsh, rh, ma, ss);
+			};
+
+			render();
+		});
 	</script>
 
 	<canvas width="900" height="900" style="width: 900px; height: 900px; border: 1px solid black;"></canvas>
+
+	<div class="controls" style="position: absolute; top: 200px; left: 50%; margin-left: -200px; width: 400px; border: 1px solid #999;">
+		<table>
+			<tr>
+				<td><label for="lightSourceDistance">Light source distance</label></td>
+				<td><input type="text" id="lightSourceDistance" value="200" /></td>
+			</tr>
+			<tr>
+				<td><label for="lightSourceHeight">Light source height</label></td>
+				<td><input type="text" id="lightSourceHeight" value="10" /></td>
+			</tr>
+			<tr>
+				<td><label for="reflectorHeight">Reflector height</label></td>
+				<td><input type="text" id="reflectorHeight" value="-5" /></td>
+			</tr>
+			<tr>
+				<td><label for="maxAngle">Maximum angle</label></td>
+				<td><input type="text" id="maxAngle" value="20" /></td>
+			</tr>
+			<tr>
+				<td><label for="stepSize">Step size</label></td>
+				<td><input type="text" id="stepSize" value="0.1" /></td>
+			</tr>
+			<tr>
+				<td colspan="2"><button onclick="javascript:render();">Render</button></td>
+			</tr>
+		</table>
+	</div>
 </body>
 </html>

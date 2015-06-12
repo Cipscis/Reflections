@@ -1,4 +1,4 @@
-require([
+define([
 	'Vector/Vector',
 	'Vector/Line',
 	'Vector/Plane'
@@ -7,12 +7,19 @@ require([
 		lightSourceHeight = 10,
 		reflectorHeight = -5,
 		maxAngle = 20,
+		stepSize = 0.1,
 
 		lightSource,
 		reflectorPlane,
 		canvas, context;
 
-	var init = function () {
+	var init = function (lightSourceDistanceParam, lightSourceHeightParam, reflectorHeightParam, maxAngleParam, stepSizeParam) {
+		lightSourceDistance = lightSourceDistanceParam || lightSourceDistance;
+		lightSourceHeight = lightSourceHeightParam || lightSourceHeight;
+		reflectorHeight = reflectorHeightParam || reflectorHeight;
+		maxAngle = maxAngleParam || maxAngle;
+		stepSize = stepSizeParam || stepSize;
+
 		lightSource = new Vector(0, lightSourceHeight, lightSourceDistance);
 		reflectorPlane = new Plane(
 			new Vector(0, 1, 0),
@@ -21,7 +28,7 @@ require([
 
 		canvas = document.getElementsByTagName('canvas')[0];
 		context = canvas.getContext('2d');
-		context.clearRect(0, 0, 20, 20);
+		context.clearRect(0, 0, canvas.width, canvas.height);
 
 		drawHorizon();
 		drawLightSource();
@@ -35,8 +42,8 @@ require([
 		context.strokeStyle = strokeStyle || '#000';
 
 		context.beginPath();
-		context.moveTo(0, 450);
-		context.lineTo(900, 450);
+		context.moveTo(0, canvas.height/2);
+		context.lineTo(canvas.width, canvas.height/2);
 		context.stroke();
 
 		context.restore();
@@ -46,7 +53,7 @@ require([
 		context.save();
 		context.fillStyle = fillStyle || '#f00';
 
-		context.fillRect(450+lightSource.i/lightSource.k*400-0.5, 450-lightSource.j/lightSource.k*400-0.5, 2, 2);
+		context.fillRect(canvas.width/2+lightSource.i/lightSource.k*400-0.5, canvas.height/2-lightSource.j/lightSource.k*400-0.5, 2, 2);
 
 		context.restore();
 	};
@@ -68,8 +75,8 @@ require([
 
 		var smallestAngle = 180, smallestI, smallestJ;
 
-		for (i = -45; i < 45; i += 0.05) {
-			for (j = 0; j < 90; j += 0.05) {
+		for (i = -30; i < 30; i += stepSize) {
+			for (j = 0; j < 50; j += stepSize) {
 				angleH = (i + 90) / 180*Math.PI;
 				angleV = (j + 90) / 180*Math.PI;
 
@@ -87,9 +94,9 @@ require([
 				neededReflectorPlaneAngle = neededReflectorPlane.angle(reflectorPlane) * 180/Math.PI;
 
 				if (neededReflectorPlaneAngle < tolerance) {
-					var strength = Math.pow(1-neededReflectorPlaneAngle/tolerance, 2)/5;
+					var strength = Math.pow(1-neededReflectorPlaneAngle/tolerance, 2);
 					context.fillStyle = fillStyle || 'rgba(0, 0, 0, ' + strength + ')';
-					context.fillRect(450+reflectionPoint.i/reflectionPoint.k*400, 450-reflectionPoint.j/reflectionPoint.k*400, 1, 1);
+					context.fillRect(canvas.width/2+reflectionPoint.i/reflectionPoint.k*400-5*stepSize, canvas.height/2-reflectionPoint.j/reflectionPoint.k*400-5*stepSize, 10*stepSize, 10*stepSize);
 				}
 
 				if (neededReflectorPlaneAngle < smallestAngle) {
@@ -101,5 +108,7 @@ require([
 		}
 	};
 
-	init();
+	return {
+		init: init
+	};
 });
