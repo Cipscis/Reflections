@@ -1,9 +1,8 @@
 require([
 	'Vector/Vector',
-	'Vector/Point',
 	'Vector/Line',
 	'Vector/Plane'
-], function (Vector, Point, Line, Plane) {
+], function (Vector, Line, Plane) {
 	// Example of finding plane of reflection from directions
 
 
@@ -19,7 +18,7 @@ require([
 		reflection = line.reflect(plane),
 		angle = 90-lineDirection.angle(planeNormal)/Math.PI*180;
 
-	// console.log(line.intersectPoint(new Point(0, 1, 1)));
+	// console.log(line.intersectPoint(new Vector(0, 1, 1)));
 
 	console.log(line.direction.normalise(), reflection.direction.normalise());
 
@@ -41,4 +40,13 @@ require([
 		p2 = new Plane(n2);
 
 	console.log(p1.angle(p2)/Math.PI*180);*/
+
+
+
+	// Example of finding line intersection
+
+	var l1 = new Line(new Vector(0, 0, 1), new Vector(0, 0, 0)),
+		l2 = new Line(new Vector(0, 1, 1), new Vector(0, -1, 0));
+
+	console.log(l1.intersectLine(l2));
 });

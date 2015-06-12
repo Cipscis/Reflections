@@ -14,6 +14,14 @@ define([], function () {
 		return this.i*that.i + this.j*that.j + this.k*that.k;
 	};
 
+	Vector.prototype.cross = function (that) {
+		if (!(that instanceof Vector)) {
+			return undefined;
+		}
+
+		return new Vector(this.j*that.k - this.k*that.j, this.k*that.i - this.i*that.k, this.i*that.j - this.j*that.i);
+	};
+
 	Vector.prototype.angle = function (that) {
 		if (!(that instanceof Vector)) {
 			return undefined;
@@ -74,6 +82,14 @@ define([], function () {
 
 		// r = d - 2(d.n)n
 		return this.subtract(normal.multiply(2*this.dot(normal)));
+	};
+
+	Vector.prototype.getReflectorNormal = function (that) {
+		if (!(that instanceof Vector)) {
+			return undefined;
+		}
+
+		return this.subtract(that).normalise();
 	};
 
 	return Vector;
