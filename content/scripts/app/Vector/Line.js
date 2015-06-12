@@ -10,7 +10,7 @@ define([
 		this.origin = (origin && origin instanceof Vector) ? origin : new Vector(0, 0, 0);
 	};
 
-	Line.prototype.intersect = function (plane) {
+	Line.prototype.intersectPlane = function (plane) {
 		if (!(plane instanceof Plane)) {
 			return undefined;
 		}
@@ -31,13 +31,26 @@ define([
 		return new Point(x, y, z);
 	};
 
+	Line.prototype.intersectPoint = function (point) {
+		if (!(point instanceof Point)) {
+			return undefined;
+		}
+
+		var plane = new Plane(this.direction, new Vector(point.x, point.y, point.z)),
+			intersect = this.intersectPlane(plane);
+
+		console.log(intersect);
+
+		return (intersect.x === point.x && intersect.y === point.y && intersect.z === point.z);
+	};
+
 	Line.prototype.reflect = function (plane) {
 		if (!(plane instanceof Plane)) {
 			return undefined;
 		}
 
-		var direction = this.direction.reflect(plane),
-			origin = this.intersect(plane);
+		var direction = this.direction.reflect(plane.normal),
+			origin = this.intersectPlane(plane);
 
 		return new Line(direction, origin);
 	};

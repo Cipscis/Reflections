@@ -13,6 +13,14 @@ define([
 		this.p = this.a*this.origin.i + this.b*this.origin.j + this.c*this.origin.k;
 	};
 
+	Plane.prototype.angle = function (that) {
+		if (!(that instanceof Plane)) {
+			return undefined;
+		}
+
+		return this.normal.angle(that.normal);
+	};
+
 	return Plane;
 
 });

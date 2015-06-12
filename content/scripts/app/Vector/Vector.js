@@ -45,7 +45,7 @@ define([], function () {
 		return new Vector(this.i*a, this.j*a, this.k*a);
 	};
 
-	Vector.prototype.plus = function (that) {
+	Vector.prototype.add = function (that) {
 		if (!(that instanceof Vector)) {
 			return undefined;
 		}
@@ -53,12 +53,12 @@ define([], function () {
 		return new Vector(this.i+that.i, this.j+that.j, this.k+that.k);
 	};
 
-	Vector.prototype.minus = function (that) {
+	Vector.prototype.subtract = function (that) {
 		if (!(that instanceof Vector)) {
 			return undefined;
 		}
 
-		return this.plus(that.multiply(-1));
+		return this.add(that.multiply(-1));
 	};
 
 	Vector.prototype.normalise = function () {
@@ -73,7 +73,7 @@ define([], function () {
 		}
 
 		// r = d - 2(d.n)n
-		return this.minus(normal.multiply(2*this.dot(normal)));
+		return this.subtract(normal.multiply(2*this.dot(normal)));
 	};
 
 	return Vector;
