@@ -1,9 +1,9 @@
 define([], function () {
 
 	var Vector = function (i, j, k) {
-		this.i = i || 0;
-		this.j = j || 0;
-		this.k = k || 0;
+		this.i = +i || 0;
+		this.j = +j || 0;
+		this.k = +k || 0;
 	};
 
 	Vector.prototype.dot = function (that) {
@@ -19,7 +19,11 @@ define([], function () {
 			return undefined;
 		}
 
-		return new Vector(this.j*that.k - this.k*that.j, this.k*that.i - this.i*that.k, this.i*that.j - this.j*that.i);
+		return new Vector(
+			this.j*that.k - this.k*that.j,
+			this.k*that.i - this.i*that.k,
+			this.i*that.j - this.j*that.i
+		);
 	};
 
 	Vector.prototype.angle = function (that) {
@@ -42,7 +46,11 @@ define([], function () {
 	};
 
 	Vector.prototype.magnitude = function () {
-		return Math.sqrt(this.i*this.i + this.j*this.j + this.k*this.k);
+		return Math.sqrt(
+			this.i*this.i +
+			this.j*this.j +
+			this.k*this.k
+		);
 	};
 
 	Vector.prototype.multiply = function (a) {
@@ -50,7 +58,11 @@ define([], function () {
 			return undefined;
 		}
 
-		return new Vector(this.i*a, this.j*a, this.k*a);
+		return new Vector(
+			this.i*a,
+			this.j*a,
+			this.k*a
+		);
 	};
 
 	Vector.prototype.add = function (that) {
@@ -58,7 +70,11 @@ define([], function () {
 			return undefined;
 		}
 
-		return new Vector(this.i+that.i, this.j+that.j, this.k+that.k);
+		return new Vector(
+			this.i+that.i,
+			this.j+that.j,
+			this.k+that.k
+		);
 	};
 
 	Vector.prototype.subtract = function (that) {
@@ -72,7 +88,11 @@ define([], function () {
 	Vector.prototype.normalise = function () {
 		var magnitude = this.magnitude();
 
-		return new Vector(this.i/magnitude, this.j/magnitude, this.k/magnitude);
+		return new Vector(
+			this.i/magnitude,
+			this.j/magnitude,
+			this.k/magnitude
+		);
 	};
 
 	Vector.prototype.reflect = function (normal) {
@@ -89,6 +109,7 @@ define([], function () {
 			return undefined;
 		}
 
+		// subtract incident and reflected rays to get reflector pane normal
 		return this.normalise().subtract(that.normalise()).normalise();
 	};
 

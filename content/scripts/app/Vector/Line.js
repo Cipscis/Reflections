@@ -45,7 +45,7 @@ define([
 		var lhs = this.direction.cross(line.direction);
 		var rhs = (line.origin.subtract(this.origin)).cross(line.direction);
 
-		// If the cross product was non-zero, these must be parallel?
+		// If the cross product was non-zero, these must be parallel but some components may be 0
 		var scale = lhs.i/rhs.i || lhs.j/rhs.j || lhs.k/rhs.k;
 
 		var intersect = this.origin.add(this.direction.multiply(scale));
@@ -58,10 +58,9 @@ define([
 			return undefined;
 		}
 
+		// Create orthogonal plane at point, is intersection with plane at point?
 		var plane = new Plane(this.direction, new Vector(point.i, point.j, point.k)),
 			intersect = this.intersectPlane(plane);
-
-		console.log(intersect);
 
 		return (intersect.i === point.i && intersect.j === point.j && intersect.k === point.k);
 	};

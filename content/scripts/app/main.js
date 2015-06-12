@@ -6,19 +6,27 @@ require([
 	window.Vector = Vector;
 
 
+	var lightSourceDistance = 200,
+		lightSourceHeight = 10,
+		reflectorHeight = -5,
+		standardDeviationAngle = 20;
 
-	var observer = new Vector(0, 0, 0),
-		lightSource = new Vector(0, 40, 50),
+
+
+
+	var lightSource = new Vector(0, lightSourceHeight, lightSourceDistance),
 		reflectorPlane = new Plane(
 			new Vector(0, 1, 0),
-			new Vector(0, -5, 0)
+			new Vector(0, reflectorHeight, 0)
 		);
 
 	var canvas = document.getElementsByTagName('canvas')[0];
 	var context = canvas.getContext('2d');
 	context.clearRect(0, 0, 20, 20);
 
-	var isWithinTolerance = function (observer, lightSource, reflectorPlane, tolerance) {
+	var isWithinTolerance = function (lightSource, reflectorPlane, tolerance, fillStyle) {
+		// Observer at [0, 0, 0]
+
 		var i, j,
 			angleV, angleH,
 			x, y, z,
@@ -27,7 +35,7 @@ require([
 			neededReflectorPlane,
 			neededReflectorPlaneAngle;
 
-		var smallestAngle = 100, smallestI, smallestJ;
+		var smallestAngle = 180, smallestI, smallestJ;
 
 		for (i = -45; i < 45; i += 0.1) {
 			for (j = 0; j < 90; j += 0.1) {
@@ -48,9 +56,9 @@ require([
 				neededReflectorPlaneAngle = neededReflectorPlane.angle(reflectorPlane) * 180/Math.PI;
 
 				if (neededReflectorPlaneAngle < tolerance) {
-					var color = Math.floor(255-(1-neededReflectorPlaneAngle/tolerance)*255);
-					context.fillStyle = 'rgb(' + color + ', ' + color + ', ' + color + ')';
-					context.fillRect(i*10+300, 900-j*10, 1, 1);
+					var opacity = Math.pow(1-neededReflectorPlaneAngle/tolerance, 2);
+					context.fillStyle = fillStyle || 'rgba(0, 0, 0, ' + opacity + ')';
+					context.fillRect(450+reflectionPoint.i/reflectionPoint.k*400, 450-reflectionPoint.j/reflectionPoint.k*400, 1, 1);
 				}
 
 				if (neededReflectorPlaneAngle < smallestAngle) {
@@ -62,8 +70,17 @@ require([
 		}
 	};
 
-	isWithinTolerance(observer, lightSource, reflectorPlane, 7);
+	isWithinTolerance(lightSource, reflectorPlane, standardDeviationAngle);
 
+	isWithinTolerance(lightSource, reflectorPlane, 0.1, '#f00');
+
+	context.fillRect(450+lightSource.i/lightSource.k*400-0.5, 450-lightSource.j/lightSource.k*400-0.5, 2, 2);
+
+	context.strokeStyle = '#000';
+	context.beginPath();
+	context.moveTo(0, 450);
+	context.lineTo(900, 450);
+	context.stroke();
 
 	// Example of finding plane of reflection from directions
 
