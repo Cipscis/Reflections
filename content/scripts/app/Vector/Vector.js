@@ -89,7 +89,7 @@ define([], function () {
 			return undefined;
 		}
 
-		return this.subtract(that).normalise();
+		return this.normalise().subtract(that.normalise()).normalise();
 	};
 
 	return Vector;

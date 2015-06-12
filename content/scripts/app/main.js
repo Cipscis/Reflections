@@ -3,6 +3,68 @@ require([
 	'Vector/Line',
 	'Vector/Plane'
 ], function (Vector, Line, Plane) {
+	window.Vector = Vector;
+
+
+
+	var observer = new Vector(0, 0, 0),
+		lightSource = new Vector(0, 40, 50),
+		reflectorPlane = new Plane(
+			new Vector(0, 1, 0),
+			new Vector(0, -5, 0)
+		);
+
+	var canvas = document.getElementsByTagName('canvas')[0];
+	var context = canvas.getContext('2d');
+	context.clearRect(0, 0, 20, 20);
+
+	var isWithinTolerance = function (observer, lightSource, reflectorPlane, tolerance) {
+		var i, j,
+			angleV, angleH,
+			x, y, z,
+			reflectionDirection, reflectionPoint,
+			incidentRay,
+			neededReflectorPlane,
+			neededReflectorPlaneAngle;
+
+		var smallestAngle = 100, smallestI, smallestJ;
+
+		for (i = -45; i < 45; i += 0.1) {
+			for (j = 0; j < 90; j += 0.1) {
+				angleH = (i + 90) / 180*Math.PI;
+				angleV = (j + 90) / 180*Math.PI;
+
+				x = Math.cos(angleH);
+				y = Math.cos(angleV);
+				z = Math.sqrt(1-(x*x + y*y));
+
+				reflectionDirection = new Vector(x, y, z);
+				reflectionPoint = (new Line(reflectionDirection)).intersectPlane(reflectorPlane);
+
+				incidentRay = new Line(lightSource.subtract(reflectionPoint));
+
+				neededReflectorPlane = new Plane(reflectionPoint.getReflectorNormal(incidentRay.direction), reflectionPoint);
+
+				neededReflectorPlaneAngle = neededReflectorPlane.angle(reflectorPlane) * 180/Math.PI;
+
+				if (neededReflectorPlaneAngle < tolerance) {
+					var color = Math.floor(255-(1-neededReflectorPlaneAngle/tolerance)*255);
+					context.fillStyle = 'rgb(' + color + ', ' + color + ', ' + color + ')';
+					context.fillRect(i*10+300, 900-j*10, 1, 1);
+				}
+
+				if (neededReflectorPlaneAngle < smallestAngle) {
+					smallestI = i;
+					smallestJ = j;
+					smallestAngle = neededReflectorPlaneAngle;
+				}
+			}
+		}
+	};
+
+	isWithinTolerance(observer, lightSource, reflectorPlane, 7);
+
+
 	// Example of finding plane of reflection from directions
 
 
@@ -45,8 +107,8 @@ require([
 
 	// Example of finding line intersection
 
-	var l1 = new Line(new Vector(0, 0, 1), new Vector(0, 0, 0)),
+	/*var l1 = new Line(new Vector(0, 0, 1), new Vector(0, 0, 0)),
 		l2 = new Line(new Vector(0, 1, 1), new Vector(0, -1, 0));
 
-	console.log(l1.intersectLine(l2));
+	console.log(l1.intersectLine(l2));*/
 });
