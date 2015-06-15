@@ -30,21 +30,18 @@ define([
 		context = canvas.getContext('2d');
 		context.clearRect(0, 0, canvas.width, canvas.height);
 
-		drawHorizon();
+		drawBackground();
 		drawLightSource();
 
 		projectReflection(lightSource, reflectorPlane, maxAngle);
 		drawLightSourceReflection('#f00');
 	};
 
-	var drawHorizon = function (strokeStyle) {
+	var drawBackground = function (fillStyle) {
 		context.save();
-		context.strokeStyle = strokeStyle || '#000';
 
-		context.beginPath();
-		context.moveTo(0, canvas.height/2);
-		context.lineTo(canvas.width, canvas.height/2);
-		context.stroke();
+		context.fillStyle = fillStyle || '#000';
+		context.fillRect(0, canvas.height/2, canvas.width, canvas.height/2);
 
 		context.restore();
 	};
@@ -93,7 +90,7 @@ define([
 
 				if (neededReflectorPlaneAngle < tolerance) {
 					var strength = Math.pow(1-neededReflectorPlaneAngle/tolerance, 2);
-					context.fillStyle = fillStyle || 'rgba(0, 0, 0, ' + strength + ')';
+					context.fillStyle = fillStyle || 'rgba(255, 255, 0, ' + strength + ')';
 					context.fillRect(canvas.width/2+reflectionPoint.i/reflectionPoint.k*400-5*stepSize, canvas.height/2-reflectionPoint.j/reflectionPoint.k*400-5*stepSize, 10*stepSize, 10*stepSize);
 				}
 			}
